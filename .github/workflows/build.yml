@@ -1,0 +1,34 @@
+name: Build Bilal Collection APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract project
+        run: unzip -q BilalCollection-Android-Project.zip
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Build APK
+        run: cd BilalCollection && gradle assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Bilal-Collection-APK
+          path: BilalCollection/app/build/outputs/apk/debug/app-debug.apk
